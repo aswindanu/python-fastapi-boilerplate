@@ -1,0 +1,60 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: FastAPI Boilerplate Application
+
+on:
+  push:
+    branches: [master, dev]
+    paths-ignore:
+      - "README.md"
+      - "docker-compose.yml"
+  pull_request:
+    branches: [master]
+    paths-ignore:
+      - "README.md"
+      - "docker-compose.yml"
+
+jobs:
+  container-job:
+    runs-on: ubuntu-latest
+    container: python:3.8
+
+    services:
+      db:
+        image: postgres
+        env:
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: app
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest requests
+          if [ -f backend/app/requirements/prod.txt ]; then pip install -r backend/app/requirements/prod.txt; fi
+      - name: Lint with flake8
+        run: |
+          # stop the build if there are Python syntax errors or undefined names
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: DB first migration
+        env:
+          PYTHONPATH: .
+        run: |
+          alembic upgrade head
+        working-directory: ./backend/app
+      - name: Test with pytest
+        run: |
+          pytest

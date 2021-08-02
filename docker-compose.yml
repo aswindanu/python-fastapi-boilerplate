@@ -1,0 +1,32 @@
+version: "3"
+services:
+  app:
+    build:
+      context: ./app
+    volumes:
+      - ./app:/app
+    ports:
+      - 8001:8000
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_USER=app
+      - POSTGRES_PASSWORD=app
+      - POSTGRES_DB=app
+      - POSTGRES_SERVER=db
+      - PYTHONPATH=/app
+      - SMTP_SERVER=your_stmp_server_here
+  db:
+    image: postgres:12.4
+    restart: always
+    environment:
+      # if user, pass, and db changes, need to remove previous containers # docker-compose rm -vf
+      - POSTGRES_USER=app
+      - POSTGRES_PASSWORD=app
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
