@@ -26,7 +26,8 @@ class Settings(BaseSettings):
     DATABASE_NAME: str = os.environ.get("DATABASE_NAME", "Hobby-dev")
     DATABASE_USER: str = os.environ.get("DATABASE_USER", "postgres")
     DATABASE_PASS: str = os.environ.get("DATABASE_PASS", "")
-    DATABASE_URL: str = os.environ.get("DATABASE_URL", "")
+
+    DATABASE_URL: str = os.environ.get("DATABASE_URL", "")  # only for heroku
 
     CORS_ORIGINS: str = os.environ.get("CORS_ORIGINS", "")
     SECRET_KEY: str = os.environ.get("SECRET_KEY", "")
