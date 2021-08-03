@@ -47,31 +47,31 @@ app.add_middleware(
 
 
 # Sentry log
-sentry_sdk.init(
-    settings.SENTRY_URL,
+if not settings.DATABASE_URL: # heroku exceptional
+    sentry_sdk.init(
+        settings.SENTRY_URL,
 
-    # Set traces_sample_rate to 1.0 to capture 100%
-    # of transactions for performance monitoring.
-    # We recommend adjusting this value in production.
-    traces_sample_rate=1.0
-)
+        # Set traces_sample_rate to 1.0 to capture 100%
+        # of transactions for performance monitoring.
+        # We recommend adjusting this value in production.
+        traces_sample_rate=1.0
+    )
 
-@app.middleware("http")
-async def sentry_exception(request, call_next):
-    try:
-        response = await call_next(request)
-        return response
-    except Exception as e:
-        with sentry_sdk.push_scope() as scope:
-            scope.set_context("request", request)
-            user_id = "database_user_id" # when available
-            scope.user = {
-                "ip_address": request.client.host,
-                "id": user_id
-            }
-            sentry_sdk.capture_exception(e)
-        print(e)
-        raise e
+    @app.middleware("http")
+    async def sentry_exception(request, call_next):
+        try:
+            response = await call_next(request)
+            return response
+        except Exception as e:
+            with sentry_sdk.push_scope() as scope:
+                scope.set_context("request", request)
+                user_id = "database_user_id" # when available
+                scope.user = {
+                    "ip_address": request.client.host,
+                    "id": user_id
+                }
+                sentry_sdk.capture_exception(e)
+            raise e
 # ==========
 
 
