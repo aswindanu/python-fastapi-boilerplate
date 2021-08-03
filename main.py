@@ -80,4 +80,4 @@ app.include_router(items.router)
 app.include_router(users.router)
 
 if __name__ == "__main__":
-    uvicorn.run(app, host=settings.DATABASE_HOST, port=settings.DATABASE_PORT, debug_level="info")
+    uvicorn.run(app, host="0.0.0.0", port="8000", debug_level="info")
