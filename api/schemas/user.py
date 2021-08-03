@@ -1,14 +1,20 @@
-from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
+from pydantic import BaseModel, EmailStr
 from api.schemas.item import ItemSchema
 
 
 class UserBase(BaseModel):
-    username: str
-    email: str
+    email: Optional[EmailStr]
+    username: Optional[str]
 
 
 class UserCreate(UserBase):
+    email: EmailStr
+    username: str
+    password: str
+
+
+class UserUpdate(UserBase):
     password: str
 
 

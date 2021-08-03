@@ -19,7 +19,7 @@ def get_db():
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+async def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Invalid authentication credentials",
@@ -33,7 +33,7 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_
         token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    user = crud_user.get_user_by_username(db=db, username=token_data.username)
+    user = await crud_user.get_user_by_username(db=db, username=token_data.username)
     if user is None:
         raise credentials_exception
     return user
