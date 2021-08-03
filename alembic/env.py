@@ -32,7 +32,7 @@ config = context.config
 
 from core.config import settings
 
-from database.base import Base
+from database.base import *
 from database.setup import get_url
 # add your model's MetaData object here
 # for 'autogenerate' support

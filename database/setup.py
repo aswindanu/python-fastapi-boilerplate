@@ -10,10 +10,10 @@ def get_url():
     name = settings.DATABASE_NAME
     host = settings.DATABASE_HOST
     port = settings.DATABASE_PORT
-    # return f"mysql+pymysql://{user}:{password}@{host}:{port}/{name}"
-    if settings.DATABASE_URL:
+    if settings.DATABASE_URL:  # handle heroku postgres
         return settings.DATABASE_URL
     else:
+        # return f"mysql+pymysql://{user}:{password}@{host}:{port}/{name}"
         return f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{name}"
 
 

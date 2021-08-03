@@ -2,12 +2,8 @@ import os
 from dotenv import load_dotenv
 from pydantic import BaseSettings
 
-cwd = os.getcwd()
-env_file = "/".join(cwd.split("/")[:-1]) + ".env"
-print(env_file)
-load_dotenv(dotenv_path=env_file)
-
-print(os.environ.get("CORS_ORIGINS", ""))
+env_file = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+load_dotenv(os.path.join(env_file, "core", ".env"))
 
 class Settings(BaseSettings):
     # config
@@ -23,8 +19,8 @@ class Settings(BaseSettings):
 
     DATABASE_HOST: str = os.environ.get("DATABASE_HOST", "127.0.0.1")
     DATABASE_PORT: int = os.environ.get("DATABASE_PORT", 5432)
-    DATABASE_NAME: str = os.environ.get("DATABASE_NAME", "Hobby-dev")
-    DATABASE_USER: str = os.environ.get("DATABASE_USER", "postgres")
+    DATABASE_NAME: str = os.environ.get("DATABASE_NAME", "")
+    DATABASE_USER: str = os.environ.get("DATABASE_USER", "")
     DATABASE_PASS: str = os.environ.get("DATABASE_PASS", "")
 
     DATABASE_URL: str = os.environ.get("DATABASE_URL", "")  # only for heroku
