@@ -3,11 +3,9 @@ from dotenv import load_dotenv
 from pydantic import BaseSettings
 
 cwd = os.getcwd()
-env_file = "/".join(cwd.split("/")[:-1]) + "/.env"
+env_file = "/".join(cwd.split("/")[:-1]) + ".env"
 print(env_file)
 load_dotenv(dotenv_path=env_file)
-
-print(os.environ.get("DATABASE_USER", ""))
 
 class Settings(BaseSettings):
     # config
