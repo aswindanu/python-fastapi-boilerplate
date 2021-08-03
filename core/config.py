@@ -27,7 +27,7 @@ class Settings(BaseSettings):
 
     DATABASE_URL: str = os.environ.get("DATABASE_URL", "")  # only for heroku
 
-    CORS_ORIGINS: str = os.environ.get("CORS_ORIGINS", "")
+    CORS_ORIGINS: str = os.environ.get("CORS_ORIGINS", "*")
     SECRET_KEY: str = os.environ.get("SECRET_KEY", "")
     SENTRY_URL: str = os.environ.get("SENTRY_URL", "")
 
