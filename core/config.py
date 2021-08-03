@@ -3,8 +3,11 @@ from dotenv import load_dotenv
 from pydantic import BaseSettings
 
 cwd = os.getcwd()
-env_file = "/".join(cwd.split("/")[:-1]) + "../.env"
+env_file = "/".join(cwd.split("/")[:-1]) + "/.env"
+print(env_file)
 load_dotenv(dotenv_path=env_file)
+
+print(os.environ.get("DATABASE_USER", ""))
 
 class Settings(BaseSettings):
     # config
@@ -16,12 +19,14 @@ class Settings(BaseSettings):
     ALGORITHM = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES = 60
     SECRET_KEY: str = os.environ.get("SECRET_KEY", "")
+    DEV: int = os.environ.get("DEV", 0)
 
     DATABASE_HOST: str = os.environ.get("DATABASE_HOST", "127.0.0.1")
     DATABASE_PORT: int = os.environ.get("DATABASE_PORT", 5432)
-    DATABASE_NAME: str = os.environ.get("DATABASE_NAME", "")
+    DATABASE_NAME: str = os.environ.get("DATABASE_NAME", "Hobby-dev")
     DATABASE_USER: str = os.environ.get("DATABASE_USER", "postgres")
     DATABASE_PASS: str = os.environ.get("DATABASE_PASS", "")
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "")
 
     CORS_ORIGINS: str = os.environ.get("CORS_ORIGINS", "")
     SECRET_KEY: str = os.environ.get("SECRET_KEY", "")

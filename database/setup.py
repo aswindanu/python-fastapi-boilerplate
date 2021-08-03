@@ -11,7 +11,10 @@ def get_url():
     host = settings.DATABASE_HOST
     port = settings.DATABASE_PORT
     # return f"mysql+pymysql://{user}:{password}@{host}:{port}/{name}"
-    return f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{name}"
+    if settings.DATABASE_URL:
+        return settings.DATABASE_URL
+    else:
+        return f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{name}"
 
 
 SQLALCHEMY_DATABASE_URL = get_url()
