@@ -6,11 +6,10 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
-from crud import crud_user
+from crud.crud_user import crud_user
 from core.config import settings
 from services.messaging.email import send_email
 from api.deps import get_db, oauth2_scheme, get_current_user
-from api.auth import auth
 from api.schemas.user import UserSchema, UserCreate, UserUpdate
 from database.base import User
 from api import dresp
@@ -24,17 +23,17 @@ async def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
 ) -> Any:
-    user = await auth.authenticate_user(
+    db_user = await crud_user.authenticate_user(
         db=db, username=form_data.username, password=form_data.password)
-    if not user:
+    if not db_user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = await auth.create_access_token(
-        data={"sub": user.username}, expires_delta=access_token_expires)
+    access_token = await crud_user.create_access_token(
+        data={"sub": db_user.username}, expires_delta=access_token_expires)
     return {"access_token": access_token, "token_type": "bearer"}
 
 
@@ -48,8 +47,8 @@ async def read_users(
     limit: int = 100,
     db: Session = Depends(get_db)
 ) -> User:
-    users = await crud_user.get_users(db=db, skip=skip, limit=limit)
-    return users
+    db_users = await crud_user.get_users(db=db, skip=skip, limit=limit)
+    return db_users
 
 
 @router.get(

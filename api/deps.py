@@ -3,7 +3,7 @@ from fastapi import Depends, HTTPException, status
 from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 from api.schemas.token import TokenData
-from crud import crud_user
+from crud.crud_user import crud_user
 from core.config import settings
 from database.setup import SessionLocal
 
