@@ -7,6 +7,8 @@ env_file = "/".join(cwd.split("/")[:-1]) + ".env"
 print(env_file)
 load_dotenv(dotenv_path=env_file)
 
+print(os.environ.get("SENTRY_URL", ""))
+
 class Settings(BaseSettings):
     # config
     APP_NAME: str = "FastAPI Boilerplate"
