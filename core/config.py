@@ -7,7 +7,7 @@ env_file = "/".join(cwd.split("/")[:-1]) + ".env"
 print(env_file)
 load_dotenv(dotenv_path=env_file)
 
-print(os.environ.get("SENTRY_URL", ""))
+print(os.environ.get("CORS_ORIGINS", ""))
 
 class Settings(BaseSettings):
     # config
@@ -30,7 +30,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str = os.environ.get("DATABASE_URL", "")  # only for heroku
 
     SECRET_KEY: str = os.environ.get("SECRET_KEY", "secret")
-    CORS_ORIGINS: str = os.environ.get("CORS_ORIGINS", "*")
-    SENTRY_URL: str = os.environ.get("SENTRY_URL", "https://5784bb72124b4fd3ad5fa4a45d54129f@o938716.ingest.sentry.io/5888529")
+    CORS_ORIGINS: str = os.environ.get("CORS_ORIGINS", "")
+    SENTRY_URL: str = os.environ.get("SENTRY_URL", "")
 
 settings = Settings()
