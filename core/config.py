@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from pydantic import BaseSettings
 
 cwd = os.getcwd()
-env_file = "/".join(cwd.split("/")[:-1]) + "/.env"
+env_file = "/".join(cwd.split("/")[:-1]) + "../.env"
 load_dotenv(dotenv_path=env_file)
 
 class Settings(BaseSettings):
@@ -18,9 +18,9 @@ class Settings(BaseSettings):
     SECRET_KEY: str = os.environ.get("SECRET_KEY", "")
 
     DATABASE_HOST: str = os.environ.get("DATABASE_HOST", "127.0.0.1")
-    DATABASE_PORT: int = os.environ.get("DATABASE_PORT", 8000)
+    DATABASE_PORT: int = os.environ.get("DATABASE_PORT", 5432)
     DATABASE_NAME: str = os.environ.get("DATABASE_NAME", "")
-    DATABASE_USER: str = os.environ.get("DATABASE_USER", "")
+    DATABASE_USER: str = os.environ.get("DATABASE_USER", "postgres")
     DATABASE_PASS: str = os.environ.get("DATABASE_PASS", "")
 
     CORS_ORIGINS: str = os.environ.get("CORS_ORIGINS", "")

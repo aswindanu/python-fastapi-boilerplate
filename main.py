@@ -1,3 +1,7 @@
+
+import uvicorn
+import sentry_sdk
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from api.routers import items, users
 from core.config import settings
@@ -30,5 +34,50 @@ app = FastAPI(
 )
 
 
+# CORS
+cors_origins = [i.strip() for i in settings.CORS_ORIGINS.split(",")]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=cors_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+# ==========
+
+
+# Sentry log
+sentry_sdk.init(
+    settings.SENTRY_URL,
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0
+)
+
+@app.middleware("http")
+async def sentry_exception(request, call_next):
+    try:
+        response = await call_next(request)
+        return response
+    except Exception as e:
+        with sentry_sdk.push_scope() as scope:
+            scope.set_context("request", request)
+            user_id = "database_user_id" # when available
+            scope.user = {
+                "ip_address": request.client.host,
+                "id": user_id
+            }
+            sentry_sdk.capture_exception(e)
+        print(e)
+        raise e
+# ==========
+
+
+# API register
 app.include_router(items.router)
 app.include_router(users.router)
+
+if __name__ == "__main__":
+    uvicorn.run(app, host=settings.DATABASE_HOST, port=settings.DATABASE_PORT, debug_level="info")
