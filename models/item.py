@@ -4,6 +4,10 @@ from database.setup import Base
 
 
 class Item(Base):
+    """
+    Table model of items
+    """
+
     __tablename__ = "items"
 
     id = Column(Integer, primary_key=True, index=True)

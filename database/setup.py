@@ -5,6 +5,9 @@ from core.config import settings
 
 
 def get_url():
+    """
+    List of url database
+    """
     database = settings.DATABASE
     user = settings.DATABASE_USER
     password = settings.DATABASE_PASS

@@ -4,6 +4,10 @@ from database.setup import Base
 
 
 class User(Base):
+    """
+    Table model of users
+    """
+
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)

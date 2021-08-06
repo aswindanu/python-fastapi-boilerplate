@@ -1,3 +1,7 @@
+"""base.py
+This file is used for handle Alembic migration database
+"""
+
 from database.setup import Base
 
 # NOTE: Every additional model

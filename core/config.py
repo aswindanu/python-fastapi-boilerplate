@@ -6,6 +6,10 @@ env_file = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv(os.path.join(env_file, "core", ".env"))
 
 class Settings(BaseSettings):
+    """
+    Config settings app
+    """
+
     # config
     APP_NAME: str = "FastAPI Boilerplate"
     EMAIL_SENDER: str = "no-reply@app.com"
