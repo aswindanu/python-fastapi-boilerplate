@@ -184,6 +184,7 @@ class CRUDUser(CRUDBase[UserSchema, UserCreate, UserUpdate]):
             user.hashed_password = update_data["hashed_password"]
         return await super().update(db, db_obj=user, obj_in=update_data)
 
+
     # ===== AUTH ===== #
     async def is_active(self, user: User) -> bool:
         """
