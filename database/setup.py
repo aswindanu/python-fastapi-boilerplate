@@ -5,6 +5,7 @@ from core.config import settings
 
 
 def get_url():
+    database = settings.DATABASE
     user = settings.DATABASE_USER
     password = settings.DATABASE_PASS
     name = settings.DATABASE_NAME
@@ -13,9 +14,7 @@ def get_url():
     if settings.DATABASE_URL:  # handle heroku postgres
         return settings.DATABASE_URL
     else:
-        # return f"mysql+pymysql://{user}:{password}@{host}:{port}/{name}"
-        return f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{name}"
-
+        return f"{database}://{user}:{password}@{host}:{port}/{name}"
 
 SQLALCHEMY_DATABASE_URL = get_url()
 

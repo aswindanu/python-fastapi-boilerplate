@@ -19,7 +19,25 @@ def get_db():
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-async def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+async def get_current_user(
+    db: Session = Depends(get_db),
+    token: str = Depends(oauth2_scheme)
+):
+    """
+    Get current user by access token jwt
+
+    Parameters
+    ----------
+    db : Session
+        The session database of app
+    token: str
+        A Bearer Token jwt
+
+    Returns
+    -------
+    Any
+        An object of UserSchema, or raise error 401
+    """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Invalid authentication credentials",

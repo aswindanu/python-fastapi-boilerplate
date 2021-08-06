@@ -17,6 +17,9 @@ def read_items(
     limit: int = 100,
     db: Session = Depends(get_db)
 ):
+    """
+    GET Get items list
+    """
     items = crud_item.get_items(db=db, skip=skip, limit=limit)
     return items
 
@@ -28,6 +31,9 @@ def read_user_items(
     current_user: UserSchema = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
+    """
+    GET Get user me items list
+    """
     items = crud_item.get_user_items(db=db, user_id=current_user.id)
     return items
 
@@ -38,4 +44,7 @@ def create_item_for_user(
     user_id: int,
     db: Session = Depends(get_db)
 ):
+    """
+    GET Get user list by user id
+    """
     return crud_item.create_user_item(db=db, item=item, user_id=user_id)

@@ -17,6 +17,8 @@ class Settings(BaseSettings):
     SECRET_KEY: str = os.environ.get("SECRET_KEY", "")
     DEV: int = os.environ.get("DEV", 0)
 
+    # DATABASE: str = os.environ.get("DATABASE", "mysql+pymysql")       # MySQL
+    DATABASE: str = os.environ.get("DATABASE", "postgresql+psycopg2")   # PostgreSQL
     DATABASE_HOST: str = os.environ.get("DATABASE_HOST", "127.0.0.1")
     DATABASE_PORT: int = os.environ.get("DATABASE_PORT", 5432)
     DATABASE_NAME: str = os.environ.get("DATABASE_NAME", "")

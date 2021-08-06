@@ -23,6 +23,9 @@ async def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
 ) -> Any:
+    """
+    POST Create token jwt
+    """
     db_user = await crud_user.authenticate_user(
         db=db, username=form_data.username, password=form_data.password)
     if not db_user:
@@ -46,7 +49,10 @@ async def read_users(
     skip: int = 0,
     limit: int = 100,
     db: Session = Depends(get_db)
-) -> User:
+) -> UserSchema:
+    """
+    GET Get users list
+    """
     db_users = await crud_user.get_users(db=db, skip=skip, limit=limit)
     return db_users
 
@@ -58,7 +64,10 @@ async def read_users(
 async def read_users_me(
     current_user: UserSchema = Depends(get_current_user),
     db: Session = Depends(get_db)
-) -> User:
+) -> UserSchema:
+    """
+    GET Get current user
+    """
     return current_user
 
 
@@ -70,7 +79,10 @@ async def read_users_me(
 async def read_user(
     user_id: int,
     db: Session = Depends(get_db)
-) -> User:
+) -> UserSchema:
+    """
+    GET Get user by id
+    """
     db_user = await crud_user.get_user(db=db, user_id=user_id)
     if db_user is None:
         raise HTTPException(
@@ -83,19 +95,22 @@ async def read_user(
     response_model=UserSchema,
     tags=['users'])
 async def create_user(
-    user: UserCreate,
+    obj_in: UserCreate,
     background_tasks: BackgroundTasks,
     db: Session = Depends(get_db)
-) -> User:
-    db_user = await crud_user.get_user_by_email(db=db, email=user.email)
+) -> UserSchema:
+    """
+    POST Create user
+    """
+    db_user = await crud_user.get_user_by_email(db=db, email=obj_in.email)
     if db_user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                             detail="Email already registered")
     if settings.SMTP_SERVER != "your_stmp_server_here":
-        background_tasks.add_task(send_email, user.email,
+        background_tasks.add_task(send_email, obj_in.email,
                                   message=f"You've created your account!")
     try:
-        return await crud_user.create_user(db=db, user=user)
+        return await crud_user.create_user(db=db, obj_in=obj_in)
     except IntegrityError:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Username already registered")
@@ -110,9 +125,9 @@ async def update_user(
     obj_in: UserUpdate,
     current_user: UserSchema = Depends(get_current_user),
     db: Session = Depends(get_db),
-) -> Any:
+) -> UserSchema:
     """
-    Update an item.
+    PUT Update user
     """
     return await crud_user.update_user(db=db, user=current_user, obj_in=obj_in)
 
@@ -125,8 +140,11 @@ async def remove_user(
     user_id: int,
     db: Session = Depends(get_db)
 ) -> Any:
+    """
+    DELETE Delete user
+    """
     db_user = await crud_user.get_user(db=db, user_id=user_id)
     if not db_user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=dresp.NOT_FOUND)
-    await crud_user.delete_user(db=db, user=db_user)
+    await crud_user.remove(db=db, id=id)
     return {"detail": f"User with id {db_user.id} successfully deleted"}
