@@ -136,3 +136,4 @@ dmypy.json
 
 # Migration
 alembic/versions/*
+database_data/

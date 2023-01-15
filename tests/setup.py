@@ -8,11 +8,13 @@ from core.config import settings
 
 
 def get_url():
-    user = settings.POSTGRES_USER
-    password = settings.POSTGRES_PASSWORD
-    db = settings.POSTGRES_DB
-    server = settings.POSTGRES_SERVER
-    return f"postgresql://{user}:{password}@{server}/{db}"
+    connection = settings.DATABASE
+    user = settings.DATABASE_USER
+    password = settings.DATABASE_PASSWORD
+    name = settings.DATABASE_NAME
+    host = settings.DATABASE_HOST
+    port = settings.DATABASE_PORT
+    return f"{connection}://{user}:{password}@{host}:{port}/{name}"
 
 
 SQLALCHEMY_DATABASE_URL = get_url()

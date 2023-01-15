@@ -34,7 +34,8 @@ async def login(
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(
+        minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = await crud_user.create_access_token(
         data={"sub": db_user.username}, expires_delta=access_token_expires)
     return {"access_token": access_token, "token_type": "bearer"}
@@ -145,6 +146,7 @@ async def remove_user(
     """
     db_user = await crud_user.get_user(db=db, user_id=user_id)
     if not db_user:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=dresp.NOT_FOUND)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=dresp.NOT_FOUND)
     await crud_user.remove(db=db, id=id)
     return {"detail": f"User with id {db_user.id} successfully deleted"}

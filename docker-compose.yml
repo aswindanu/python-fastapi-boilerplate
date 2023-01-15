@@ -1,32 +1,47 @@
-version: "3"
+version: "3.7"
+
 services:
+  db:
+    image: postgres:12.4
+    container_name: db
+    restart: always
+    ports:
+      - 5435:5432
+    environment:
+      # if user, pass, and db changes, need to remove previous containers # docker-compose rm -vf
+      POSTGRES_DB: ${DATABASE_NAME?Variable not set}
+      POSTGRES_USER: ${DATABASE_USER?Variable not set}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD?Variable not set}
+    volumes:
+      - ./database_data:/var/lib/postgresql/data
+    # healthcheck:
+    #   test: ["CMD-SHELL", "pg_isready -U app"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 5
+
   app:
     build:
-      context: ./app
+      context: .
+      dockerfile: ./Dockerfile
     volumes:
-      - ./app:/app
+      - .:/app
     ports:
       - 8001:8000
     depends_on:
       - db
     environment:
-      - POSTGRES_USER=app
-      - POSTGRES_PASSWORD=app
-      - POSTGRES_DB=app
-      - POSTGRES_SERVER=db
-      - PYTHONPATH=/app
-      - SMTP_SERVER=your_stmp_server_here
-  db:
-    image: postgres:12.4
-    restart: always
-    environment:
-      # if user, pass, and db changes, need to remove previous containers # docker-compose rm -vf
-      - POSTGRES_USER=app
-      - POSTGRES_PASSWORD=app
-    volumes:
-      - ./db_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U app"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      DATABASE_CONNECTION: ${DATABASE_CONNECTION?Variable not set}
+      DATABASE_USER: ${DATABASE_USER?Variable not set}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD?Variable not set}
+      DATABASE_HOST: ${DATABASE_HOST?Variable not set}
+      DATABASE_PORT: ${DATABASE_PORT?Variable not set}
+      DATABASE_NAME: ${DATABASE_NAME?Variable not set}
+      PYTHONPATH: ${PYTHONPATH?Variable not set}
+
+volumes:
+  database_data:
+
+networks:
+    default:
+        name: test
