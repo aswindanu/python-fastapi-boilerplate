@@ -30,7 +30,7 @@ INITIAL_DATA = {
 def get_url():
     connection = settings.DATABASE
     user = settings.DATABASE_USER
-    password = settings.DATABASE_PASSWORD
+    password = settings.DATABASE_PASS
     name = settings.DATABASE_NAME
     host = settings.DATABASE_HOST
     port = settings.DATABASE_PORT
