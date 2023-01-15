@@ -1,9 +1,9 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
 from passlib.context import CryptContext
 
 from database.base import *
-from database.setup import engine, settings
+from database.setup import SessionLocal
 
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated="auto")
@@ -27,22 +27,8 @@ INITIAL_DATA = {
     #   ]
 }
 
-def get_url():
-    connection = settings.DATABASE
-    user = settings.DATABASE_USER
-    password = settings.DATABASE_PASS
-    name = settings.DATABASE_NAME
-    host = settings.DATABASE_HOST
-    port = settings.DATABASE_PORT
-    return f"{connection}://{user}:{password}@{host}:{port}/{name}"
-
-
-SQLALCHEMY_DATABASE_URL = get_url()
-
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
-
-with Session(engine) as session:
+with SessionLocal() as session:
     for data in INITIAL_DATA["User"]:
         session.add(User(**data))
         session.commit()
-        # session.flush()
+        session.flush()
